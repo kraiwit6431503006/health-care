@@ -62,6 +62,22 @@ pnpm run api
 ### 5.Run Project
 
 new terminal and runproject
+
 ```bash
 pnpm dev
 ```
+
+### Login
+
+```bash
+User
+username : user
+password : user1234
+
+Admin
+username : admin
+password : admin1234
+```
+
+
+
