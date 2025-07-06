@@ -60,6 +60,8 @@ pnpm run api
 ```
 
 ### 5.Run Project
+
+new terminal and runproject
 ```bash
 pnpm dev
 ```
