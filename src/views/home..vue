@@ -20,7 +20,7 @@ const form = reactive<Report>({
   province: null,
   amphure: null,
   tambon: null,
-  gender: "",          // เพิ่ม gender ใน form
+  gender: "",
   conditions: "",
 });
 
@@ -119,7 +119,7 @@ async function handleSubmit(event: Event) {
 
 <template>
   <div class="mt-2 p-6 bg-white rounded-lg shadow-sm">
-    <h2 class="text-2xl font-bold mb-4 text-gray-800">ฟอร์มบันทึกสุขภาพประชาชน</h2>
+    <h2 class="text-2xl font-bold mb-4 text-text">ฟอร์มบันทึกสุขภาพประชาชน</h2>
 
     <form @submit.prevent="handleSubmit" class="space-y-4">
       <div class="grid grid-cols-12 gap-4">

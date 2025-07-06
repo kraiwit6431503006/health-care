@@ -15,7 +15,7 @@ const routes = [
     redirect: () => {
       const user = getUser();
       if (!user) return "/login";
-      return user.role === "admin" ? "/dashboard" : "/";
+      return user.role === "admin" ? "/dashboard" : "/form-report";
     },
   },
   {
@@ -24,10 +24,10 @@ const routes = [
     children: [{ path: "", component: Login }],
   },
   {
-    path: "/home",
+    path: "/form-report",
     component: MainLayout,
     meta: { requiresAuth: true, role: "user" },
-    children: [{ path: "/home", component: Home }],
+    children: [{ path: "/form-report", component: Home }],
   },
   {
     path: "/dashboard",

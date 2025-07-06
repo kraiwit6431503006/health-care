@@ -112,8 +112,5 @@ watch(() => props.reports, (newReports) => {
                 </li>
             </ul>
         </div>
-
-
-
     </div>
 </template>

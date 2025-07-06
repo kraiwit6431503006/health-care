@@ -44,7 +44,7 @@ function login() {
   if (foundUser.role === 'admin') {
     router.push('/dashboard')
   } else {
-    router.push('/home')
+    router.push('/form-report')
   }
 }
 

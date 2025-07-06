@@ -18,6 +18,11 @@ const currentIndex = ref<number | null>(null);
 
 const currentForm = reactive<Report>({});
 
+const dropdownOpen = ref(false);
+function toggleDropdown() {
+  dropdownOpen.value = !dropdownOpen.value;
+}
+
 function openCreateDialog() {
   Object.assign(currentForm, {
     fullName: "",
@@ -30,9 +35,11 @@ function openCreateDialog() {
     tambon: "",
     conditions: "",
   });
+  dropdownOpen.value = false;
   isEdit.value = false;
   showDialog.value = true;
 }
+
 function openEditDialog(index: number) {
   currentIndex.value = index;
   Object.assign(currentForm, reports.value[index]);
@@ -84,15 +91,13 @@ function goToNextPage() {
 function goToPreviousPage() {
   if (currentPage.value > 1) currentPage.value--;
 }
-const dropdownOpen = ref(false);
-function toggleDropdown() {
-  dropdownOpen.value = !dropdownOpen.value;
-}
 
 const filterDialogVisible = ref(false);
+
 function openFilterDialog() {
   filterDialogVisible.value = true;
 }
+
 const appliedFilters = ref<{
   fullName?: string;
   province?: string;
@@ -219,6 +224,7 @@ function downloadCSV() {
 
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
+  dropdownOpen.value = false;
 }
 
 </script>

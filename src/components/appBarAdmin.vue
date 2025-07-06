@@ -1,77 +1,104 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import LogoutDialog from '../components/LogoutDialog.vue'
 
-const sidebarOpen = ref(false)
-const dropdownOpen = ref(false)
-
+const router = useRouter()
+const route = useRoute()
+const sidebarOpen = ref(true)
+const isDesktop = ref(window.innerWidth > 768)
+const showLogoutDialog = ref(false)
 function toggleSidebar() {
-  sidebarOpen.value = !sidebarOpen.value
+    sidebarOpen.value = !sidebarOpen.value
 }
 
-function toggleDropdown() {
-  dropdownOpen.value = !dropdownOpen.value
+function onResize() {
+    isDesktop.value = window.innerWidth > 768
+
+    if (isDesktop.value) {
+        sidebarOpen.value = true
+    } else {
+        sidebarOpen.value = false
+    }
 }
+
+onMounted(() => {
+    window.addEventListener('resize', onResize)
+    onResize()
+})
+
+const menuItems = [
+    { label: 'Dashboard', path: '/dashboard', icon: 'mdi-view-dashboard-outline' },
+    { label: 'Data Managemant', path: '/data-management', icon: 'mdi-file-document-outline' },
+]
+
+function openLogout() {
+    showLogoutDialog.value = true
+}
+
 </script>
 
 <template>
-  <div class="flex h-screen bg-gray-100">
-    <!-- Overlay (mobile only) -->
-    <div
-      class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-      v-if="sidebarOpen"
-      @click="toggleSidebar"
-    ></div>
-
-    <!-- Sidebar -->
-    <aside
-      :class="[
-        'fixed md:static z-50 md:z-auto inset-y-0 left-0 w-64 bg-gray-800 text-white flex flex-col transform transition-transform duration-200 ease-in-out',
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full',
-        'md:translate-x-0'
-      ]"
-    >
-      <div class="flex items-center justify-center h-16 shadow-md text-lg font-bold">
-        Health Care
-      </div>
-
-      <nav class="flex-1 px-2 py-4 space-y-1">
-        <a href="#" class="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded">
-          <i class="mdi mdi-form-select text-lg mr-2"></i> Form
-        </a>
-        <a href="#" class="flex items-center px-4 py-2 text-sm hover:bg-gray-700 rounded">
-          <i class="mdi mdi-account text-lg mr-2"></i> Profile
-        </a>
-      </nav>
-
-      <div class="p-4 border-t border-gray-700">
-        <button @click="toggleDropdown" class="w-full flex items-center space-x-2 text-left">
-          <i class="mdi mdi-account-circle-outline text-2xl"></i>
-          <span class="text-sm">Account</span>
-        </button>
-
-        <div v-if="dropdownOpen" class="mt-2 bg-white text-gray-800 rounded shadow-md">
-          <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Your Profile</a>
-          <a href="#" class="block px-4 py-2 text-sm hover:bg-gray-100">Sign out</a>
+    <div class=" h-screen">
+        <!-- Overlay mobile -->
+        <div v-if="sidebarOpen && !isDesktop" class="fixed inset-0 bg-black bg-opacity-50 z-40" @click="toggleSidebar">
         </div>
-      </div>
-    </aside>
 
-    <!-- Main content -->
-    <div class="flex-1 flex flex-col">
-      <!-- Topbar (mobile) -->
-      <div class="md:hidden flex items-center justify-between bg-gray-800 text-white px-4 py-3 shadow">
-        <button @click="toggleSidebar" class="text-2xl">
-          <i class="mdi mdi-menu"></i>
-        </button>
-        <span class="text-lg font-semibold">Health Care</span>
-        <i class="mdi mdi-account-circle-outline text-2xl"></i>
-      </div>
+        <!-- Sidebar -->
+        <aside :class="[
+            'fixed z-50 inset-y-0 left-0 w-64 bg-white text-text flex flex-col transition-transform duration-200 ease-in-out',
+            'border-r border-gray-200',
+            sidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        ]">
+            <div class="flex items-center px-4 py-4 h-16 space-x-3 border-b border-gray-200">
+                <div
+                    class="bg-primary text-white w-10 h-10 flex items-center justify-center rounded-lg text-lg font-bold">
+                    H
+                </div>
 
-      <!-- Router View or main -->
-      <main class="flex-1 p-6 overflow-y-auto">
-        <h1 class="text-2xl font-semibold text-gray-800">Main Content</h1>
-        <!-- <router-view /> -->
-      </main>
+                <div class="leading-tight">
+                    <div class="text-lg font-bold text-gray-800">Health Care</div>
+                    <div class="text-xs text-gray-500">admin</div>
+                </div>
+            </div>
+
+            <nav class="flex-1 px-2 py-4 space-y-1">
+                <a v-for="item in menuItems" :key="item.path" href="#" @click.prevent="router.push(item.path)" :class="[
+                    'flex items-center px-4 py-2 text-sm rounded',
+                    route.path === item.path ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'
+                ]">
+                    <i :class="['mdi', item.icon, 'text-lg mr-2']"></i>
+                    {{ item.label }}
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main content -->
+        <div class="flex-1 flex flex-col transition-all duration-200" :class="{
+            'ml-64': isDesktop && sidebarOpen,
+            'ml-0': !isDesktop || !sidebarOpen,
+        }">
+            <!-- Topbar -->
+            <div class="flex items-center justify-between bg-primary text-white px-4 py-3 shadow">
+                <div class="flex">
+                    <button @click="toggleSidebar" class="text-2xl mr-2">
+                        <i class="mdi mdi-menu"></i>
+                    </button>
+                    <span class="text-lg font-semibold mt-1" style="font-size: 1.2rem;">Health Care (Admin)</span>
+                </div>
+                <button @click="openLogout"
+                    class="w-8 h-8 flex items-center justify-center rounded-full bg-white text-primary hover:bg-gray-200 transition">
+                    <i class="mdi mdi-logout text-lg"></i>
+                </button>
+
+
+            </div>
+
+            <!-- Contant -->
+            <slot name="main"></slot>
+           
+        </div>
+
+        <logout-dialog v-model="showLogoutDialog" />
     </div>
-  </div>
 </template>

@@ -11,7 +11,7 @@ defineEmits<{
 </script>
 <template>
   <div class="border rounded-lg overflow-x-auto">
-  <table class="w-full table-auto divide-y min-w-[700px]">
+    <table class="w-full table-auto divide-y min-w-[700px]">
       <thead class="text-left text-text text-sm">
         <tr>
           <th class="px-4 py-2">ชื่อ-นามสกุล</th>
@@ -26,7 +26,7 @@ defineEmits<{
           <th class="px-4 py-2">Actions</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody v-if="report.length">
         <tr v-for="(p, i) in report" :key="p.id ?? i">
           <td class="px-4 py-2">{{ p.fullName }}</td>
           <td class="px-4 py-2">{{ p.age }}</td>
@@ -44,6 +44,13 @@ defineEmits<{
             <button @click="$emit('delete', i)" class="text-red-600 hover:text-red-800" aria-label="delete">
               <i class="mdi mdi-delete text-lg"></i>
             </button>
+          </td>
+        </tr>
+      </tbody>
+      <tbody v-else>
+        <tr>
+          <td colspan="10" class="text-center text-gray-500 py-4">
+            ไม่มีข้อมูล
           </td>
         </tr>
       </tbody>
